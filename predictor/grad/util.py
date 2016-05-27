@@ -1,53 +1,30 @@
 import numpy as np
 
-def gred_U(r, u, V, bu, bm, avg, C):
+def gred_u(r, u, v, bu, bm, avg, C):
     """
-    r: a sparse row of user i
+    r: data of user i, movie j
     u: row i
+    v: col j
     """
     du = 2*C*u
-    if r.getnnz()==0:
-        return du
-    d = 0
-    for j in r.nonzero()[1]:
-        d += r[0, j]-avg-bu-bm[j]-np.dot(u, V[j,:])
-    du -= 2*d*V[j,:]
+    d = r-avg-bu-bm-np.dot(u, v)
+    du -= 2*d*v
     return du
 
-def gred_V(r, U, v, bu, bm, avg, C):
-    """
-    r: a sparse col of movie j
-    v: movie j
-    """
+def gred_v(r, u, v, bu, bm, avg, C):
     dv = 2*C*v
-    if r.getnnz()==0:
-        return dv
-    d = 0
-    for i in r.nonzero()[0]:
-        d += r[i, 0]-avg-bu[i]-bm-np.dot(U[i,:], v)
-    dv -= 2*d*U[i,:]
+    d = r-avg-bu-bm-np.dot(u, v)
+    dv -= 2*d*u
     return dv
 
-def gred_bu(r, u, V, bu, bm, avg, C):
-    """
-    r: a sparse row of user i
-    u: row i
-    """
+def gred_bu(r, u, v, bu, bm, avg, C):
     dbu = 2*C*bu
-    if r.getnnz()==0:
-        return dbu
-    d = 0
-    for j in r.nonzero()[1]:
-        d += r[0, j]-avg-bu-bm[j]-np.dot(u, V[j,:])
+    d = r-avg-bu-bm-np.dot(u, v)
     dbu -= 2*d
     return dbu
 
-def gred_bm(r, U, v, bu, bm, avg, C):
+def gred_bm(r, u, v, bu, bm, avg, C):
     dbm = 2*C*bm
-    if r.getnnz()==0:
-        return dbm
-    d = 0
-    for i in r.nonzero()[0]:
-        d += r[i, 0]-avg-bu[i]-bm-np.dot(U[i,:], v)
+    d = r-avg-bu-bm-np.dot(u, v)
     dbm -= 2*d
     return dbm
