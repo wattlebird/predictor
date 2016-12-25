@@ -28,3 +28,9 @@ def gred_bm(r, u, v, bu, bm, avg, C):
     d = r-avg-bu-bm-np.dot(u, v)
     dbm -= 2*d
     return dbm
+
+def gred(r, u, v, bu, bm, avg, C):
+    return (gred_u(r, u, v, bu, bm, avg, C),
+            gred_v(r, u, v, bu, bm, avg, C),
+            gred_bu(r, u, v, bu, bm, avg, C),
+            gred_bm(r, u, v, bu, bm, avg, C))
